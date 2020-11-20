@@ -51,7 +51,7 @@ void dealWithToken(const int token){
    std::string output_str="";
     if(token==WRONGSTR){ 
        int strLen = str_len(yytext);
-        if(strLen == 0){
+        if(strLen == 0 || (strLen>0 &&  yytext[strLen-1]!='\"')){
           printf("Error unclosed string\n");
           exit(0);
         }
@@ -60,16 +60,17 @@ void dealWithToken(const int token){
                 printf("Error unclosed string\n");
                 exit(0);
             }
-           
+            
             if (yytext[i] == '\\') {
                 if (yytext[i + 1] == 'x') {
                     int fromAsciiToChar = fromAscii(i+2); 
                     if(i+3 >= strLen || fromAsciiToChar==-1){
                         if(yytext[i+2]=='\"')  std::cout << "Error undefined escape sequence " << "x" << std::endl;
-                        if(yytext[i+3]=='\"')  std::cout << "Error undefined escape sequence " << "x" << yytext[i+2]  << std::endl;
-                        if(yytext[i+4]=='\"')  std::cout << "Error undefined escape sequence " << "x" << yytext[i+2] << yytext[i+3]  << std::endl;
-                         //printf("(2*)\n");
+                        if(yytext[i+3]=='\"')  std::cout << "Error undefined escape sequence " << "x" << yytext[i+2]  << std::endl; 
+                        std::cout << "Error undefined escape sequence " << "x" << yytext[i+2] << yytext[i+3]  << std::endl; 
                         exit(0);
+                         //printf("(2*)\n");
+                        
                     }
                 }else if(yytext[i]=='\\'&& (yytext[i+1]!='n' && yytext[i+1]!='r' && yytext[i+1]!='t' && yytext[i+1]!='0' && yytext[i+1]!='\"' && yytext[i+1]!='\\')){
                     char c = yytext[i+1];
@@ -79,7 +80,7 @@ void dealWithToken(const int token){
                
             }
              
-            if (yytext[i] == '\"') {
+            if (yytext[i] == '\"' && i<strLen-1) {
                 printf("Error %c\n", yytext[i]);
                 exit(0);
             }
@@ -122,8 +123,10 @@ void dealWithToken(const int token){
                 }
                 else if(str=='\0'){
                    // printf("here\n");
-                    output_str.push_back(str);
-                   // return;
+                   // output_str.push_back(str);
+                   
+                   std::cout << yylineno << " " << "STRING " << output_str << std::endl;
+                   return;
                 }
                 //printf("(4*)\n");
                 i+=1;
@@ -145,6 +148,8 @@ void dealWithToken(const int token){
     else{
         //TODO: deal with this!! we did not recieve a string or a comment or anything dealt with above. //DONE FOR NOW
         std::cout << yylineno << " " << tokenTypeArray[token-1] << " " << yytext << std::endl;
+    
+    
     
     }
     
