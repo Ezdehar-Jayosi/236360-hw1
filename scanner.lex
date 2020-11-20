@@ -46,7 +46,7 @@ continue return CONTINUE;
 (\") BEGIN(STRING_S);
 <STRING_S><<EOF>> print_error();
 <STRING_S>([\x00-\x09\x0b-\x0c\x0e-\x21\x23-\x5b\x5d-\x7f]|((\\)(\\))|((\\)(\"))|((\\)(n))|((\\)(r))|((\\)(t))|((\\)(0))|((\\)x))*(\") {BEGIN(INITIAL);return STRING;}
-<STRING_S>([^(\")])*((\")?)  return WRONGSTR;
+<STRING_S>([^(\")])*((\")?) return WRONGSTR;
 <STRING_S>. error();
 ({whitespaceA})+  return WHITESPACE;  
 . error();
